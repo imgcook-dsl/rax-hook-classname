@@ -1,0 +1,133 @@
+.main {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 16;
+  margin-left: 24;
+  width: 726;
+  height: 60;
+}
+.color_8 {
+  position: absolute;
+  top: 12;
+  right: 143;
+  border-top-left-radius: 10;
+  border-top-right-radius: 3;
+  border-bottom-left-radius: 10;
+  border-bottom-right-radius: 3;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 21;
+  height: 37;
+}
+.normal_div_4 {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 7;
+  margin-right: 36;
+  width: 68;
+  height: 49;
+}
+.text_3 {
+  position: relative;
+  opacity: 1;
+  line-height: 38;
+  white-space: nowrap;
+  color: #ff0031;
+  font-size: 34;
+  font-weight: 500;
+}
+.colorDiv_7 {
+  position: relative;
+  margin-top: 7;
+  border-radius: 2;
+  background-color: #ff0031;
+  width: 66;
+  height: 4;
+}
+.txt_9 {
+  position: relative;
+  opacity: 1;
+  margin-right: 37;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 400;
+}
+.word_10 {
+  position: relative;
+  opacity: 1;
+  margin-top: -4;
+  margin-right: 37;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 400;
+}
+.text_4 {
+  position: relative;
+  opacity: 1;
+  margin-right: 38;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 400;
+}
+.txt_10 {
+  position: relative;
+  opacity: 1;
+  margin-right: 37;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 400;
+}
+.word_11 {
+  position: relative;
+  opacity: 1;
+  margin-right: 17;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 400;
+}
+.normal_div_5 {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #f2f2f2;
+  width: 156;
+  height: 60;
+}
+.block_13 {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 24;
+  background-color: #ffffff;
+  width: 120;
+  height: 48;
+}
+.icon_14 {
+  margin-right: 4;
+  width: 28;
+  height: 28;
+}
+.text_5 {
+  opacity: 1;
+  line-height: 34;
+  white-space: nowrap;
+  color: #111111;
+  font-size: 30;
+  font-weight: 500;
+}

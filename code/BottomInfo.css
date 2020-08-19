@@ -1,0 +1,131 @@
+.row {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  flex-direction: row;
+  margin-top: 41;
+  width: 750;
+  height: 124;
+}
+.floorBgWrap {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  align-items: flex-start;
+  flex-direction: row;
+  width: 750;
+  height: 104;
+}
+.floorBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 750;
+  height: 104;
+}
+.block_18 {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 17;
+  margin-right: 12;
+  margin-left: 140;
+  height: 62;
+}
+.block_19 {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  height: 28;
+}
+.title_1 {
+  opacity: 1;
+  line-height: 28;
+  white-space: nowrap;
+  color: #930000;
+  font-size: 28;
+  font-weight: 500;
+}
+.txt_benifit {
+  opacity: 1;
+  line-height: 28;
+  white-space: nowrap;
+  color: #ff0133;
+  font-size: 28;
+  font-weight: 500;
+}
+.group_16 {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 10;
+  height: 24;
+}
+.txt_16 {
+  opacity: 1;
+  line-height: 24;
+  white-space: nowrap;
+  color: #ff0133;
+  font-size: 24;
+  font-weight: 400;
+}
+.info_3 {
+  opacity: 1;
+  line-height: 24;
+  white-space: nowrap;
+  color: #930000;
+  font-size: 24;
+  font-weight: 400;
+}
+.smallItem_1 {
+  position: relative;
+  margin-right: 4;
+  width: 106;
+  height: 104;
+}
+.buttonWrap_2 {
+  box-sizing: border-box;
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 28;
+  border-radius: 24;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 55, 115, 1),
+    rgba(255, 0, 50, 1)
+  );
+  padding-right: 16;
+  padding-left: 16;
+  height: 48;
+}
+.button_2 {
+  opacity: 1;
+  line-height: 28;
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: 24;
+  font-weight: 500;
+}
+.smallPic {
+  position: absolute;
+  top: 2;
+  left: 18;
+  width: 104;
+  height: 104;
+}
+.empty {
+  position: relative;
+  margin-left: 16;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 6;
+  border-color: rgba(0, 0, 0, 0.04);
+  width: 108;
+  height: 108;
+}
