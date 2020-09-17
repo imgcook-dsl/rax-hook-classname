@@ -68,8 +68,24 @@ const toUpperCaseStart = value => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
+const deepClone = obj => {
+  let objClone = Array.isArray(obj) ? [] : {};
+  if (obj && typeof obj === 'object') {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        // 判断ojb子元素是否为对象，如果是，递归复制
+        obj[key] && typeof obj[key] === 'object'
+          ? (objClone[key] = deepClone(obj[key]))
+          : (objClone[key] = obj[key]);
+      }
+    }
+  }
+  return objClone;
+};
+
 // convert to responsive unit, such as vw
 const parseStyle = (style, scale, unit) => {
+  let newStyle = null;
   for (let key in style) {
     switch (key) {
       case 'fontSize':
@@ -96,12 +112,13 @@ const parseStyle = (style, scale, unit) => {
       case 'borderRadius':
         style[key] = parseInt(style[key]) * scale;
         if (unit && style[key]) {
-          style[key] = `${style[key]}${unit}`;
+          newStyle = deepClone(style);
+          newStyle[key] = `${newStyle[key]}${unit}`;
         }
         break;
     }
   }
-  return style;
+  return newStyle || style;
 };
 
 // parse function, return params and content
