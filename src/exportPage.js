@@ -29,6 +29,8 @@ function exportPage(schema, option) {
   // inline style
   const style = {};
 
+  const styleRpx = {};
+
   // Global Public Functions
   const utils = [];
 
@@ -72,6 +74,7 @@ function exportPage(schema, option) {
 
     if (className) {
       style[className] = parseStyle(schema.props.style, scale);
+      styleRpx[className] = parseStyle(schema.props.style, scale, 'rpx');
     }
 
     let xml;
@@ -346,6 +349,11 @@ function exportPage(schema, option) {
     {
       panelName: `${fileName}.css`,
       panelValue: prettier.format(`${generateCSS(style)}`, prettierCssOpt),
+      panelType: 'css'
+    },
+    {
+      panelName: `${fileName}.rpx.css`,
+      panelValue: prettier.format(`${generateCSS(styleRpx)}`, prettierCssOpt),
       panelType: 'css'
     }
   ];

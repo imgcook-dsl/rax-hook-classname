@@ -69,7 +69,7 @@ const toUpperCaseStart = value => {
 };
 
 // convert to responsive unit, such as vw
-const parseStyle = (style, scale) => {
+const parseStyle = (style, scale, unit) => {
   for (let key in style) {
     switch (key) {
       case 'fontSize':
@@ -95,10 +95,12 @@ const parseStyle = (style, scale) => {
       case 'borderTopLeftRadius':
       case 'borderRadius':
         style[key] = parseInt(style[key]) * scale;
+        if (unit && style[key]) {
+          style[key] = `${style[key]}${unit}`;
+        }
         break;
     }
   }
-
   return style;
 };
 
