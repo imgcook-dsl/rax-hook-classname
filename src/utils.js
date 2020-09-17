@@ -85,7 +85,6 @@ const deepClone = obj => {
 
 // convert to responsive unit, such as vw
 const parseStyle = (style, scale, unit) => {
-  let newStyle = null;
   for (let key in style) {
     switch (key) {
       case 'fontSize':
@@ -112,13 +111,12 @@ const parseStyle = (style, scale, unit) => {
       case 'borderRadius':
         style[key] = parseInt(style[key]) * scale;
         if (unit && style[key]) {
-          newStyle = deepClone(style);
-          newStyle[key] = `${newStyle[key]}${unit}`;
+          style[key] = `${style[key]}${unit}`;
         }
         break;
     }
   }
-  return newStyle || style;
+  return style;
 };
 
 // parse function, return params and content
@@ -413,6 +411,7 @@ module.exports = {
   existImport,
   toUpperCaseStart,
   parseStyle,
+  deepClone,
   parseDataSource,
   parseFunction,
   parseLoop,

@@ -3,6 +3,7 @@ const {
   existImport,
   parseLoop,
   parseStyle,
+  deepClone,
   parseFunction,
   parseProps,
   parseState,
@@ -74,7 +75,7 @@ function exportPage(schema, option) {
 
     if (className) {
       style[className] = parseStyle(schema.props.style, scale);
-      styleRpx[className] = parseStyle(schema.props.style, scale, 'rpx');
+      styleRpx[className] = parseStyle(deepClone(schema.props.style), scale, 'rpx');
     }
 
     let xml;
