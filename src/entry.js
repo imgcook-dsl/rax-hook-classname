@@ -11,11 +11,11 @@ module.exports = function(schema, option) {
   option.componentsMap = componentsMap;
 
   function schemaHandler(option) {
-    const { json, scale } = option;
+    const { json, scale, index } = option;
     switch (json.componentName.toLowerCase()) {
       case 'block':
         // parse fileName
-        json.fileName = json.fileName || `block_${json.id.slice(0, 6)}`;
+        json.fileName = json.fileName || `block_${json.id.slice(0, 6)}` || `block_${index}`;
         if (
           json.smart &&
           json.smart.layerProtocol &&
@@ -34,10 +34,11 @@ module.exports = function(schema, option) {
         break;
     }
     if (json.children && json.children.length > 0 && Array.isArray(json.children)) {
-      json.children.forEach(child => {
+      json.children.forEach((child, index) => {
         schemaHandler({
           json: child,
           scale,
+          index
         });
       });
     }
