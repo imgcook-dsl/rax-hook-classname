@@ -19,7 +19,7 @@ const {
 function exportPage(schema, option) {
   const { prettier, scale, componentsMap } = option;
 
-  const fileName = schema.fileName || schema.id;
+  const fileName = schema.fileName || schema.id || 'index';
 
   // imports
   let imports = [];
@@ -333,7 +333,6 @@ function exportPage(schema, option) {
   `,
     prettierJsOpt
   );
-
   return [
     {
       panelName: `${fileName}.jsx`,
