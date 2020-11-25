@@ -314,7 +314,7 @@ function exportPage(schema, option) {
     import { ${
       hasDispatch ? 'IndexContext, IndexProvider' : 'IndexProvider'
     } } from './context';
-    import styles from './${fileName}.css';
+    import './${fileName}.css';
 
     ${utils.join('\n')}
     export default function Page() {

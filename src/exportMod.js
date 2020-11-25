@@ -282,7 +282,7 @@ function exportMod(schema, option) {
     ${importMods.map(i => i.import).join('\n')}
     ${hasDispatch ? "import { IndexContext } from '../../context';" : ''}
 
-    import styles from './${fileName}.css';
+    import './${fileName}.css';
 
     ${utils.join('\n')}
     export default memo((props) => {
