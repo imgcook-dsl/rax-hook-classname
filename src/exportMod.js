@@ -160,7 +160,8 @@ function exportMod(schema, option) {
         schema.loop,
         schema.loopArgs,
         xml,
-        statesData
+        statesData,
+        schema,
       );
       xml = parseLoopData.value;
       useState = useState.concat(parseLoopData.hookState);
@@ -171,7 +172,7 @@ function exportMod(schema, option) {
     if (schema.condition) {
       xml = parseCondition(schema.condition, xml);
     }
-    if (schema.loop || schema.condition) {
+    if (schema.loop || (schema.condition && typeof schema.condition === 'string')) {
       xml = `{${xml}}`;
     }
     return xml;

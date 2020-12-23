@@ -2,6 +2,15 @@ const isExpression = value => {
   return /^\{\{.*\}\}$/.test(value);
 };
 
+const parseExpression = (value, isReactNode) => {
+  if (isReactNode) {
+    value = value.slice(1, -1).replace(/this\./gim, '');
+  } else {
+    value = value.slice(2, -2).replace(/this\./gim, '');
+  }
+  return value
+}
+
 // eg: hello_world => HelloWorld
 const line2Hump = str => {
   str = str.replace(/[_|-](\w)/g, (all, letter) => {
@@ -162,11 +171,12 @@ const parseProps = (value, isReactNode) => {
 // parse condition: whether render the layer
 const parseCondition = (condition, render) => {
   if (typeof condition === 'boolean') {
-    return `${condition} && ${render}`;
-  } else if (typeof condition === 'string') {
-    condition = condition.replace(/this\./, '');
-    return `${condition.slice(2, -2)} && ${render}`;
+    return condition ? `${render}` : ''
+  } else if (typeof condition === 'string' && isExpression(condition)) {
+    condition = parseExpression(condition)
+    return condition ? `(${condition}) && ${render}` : `${render}`
   }
+  return render;
 };
 
 // flexDirection -> flex-direction
@@ -193,7 +203,7 @@ const generateCSS = style => {
 };
 
 // parse loop render
-const parseLoop = (loop, loopArg, render, states) => {
+const parseLoop = (loop, loopArg, render, states, schema) => {
   let data;
   let loopArgItem = (loopArg && loopArg[0]) || 'item';
   let loopArgIndex = (loopArg && loopArg[1]) || 'index';
@@ -201,11 +211,11 @@ const parseLoop = (loop, loopArg, render, states) => {
   if (Array.isArray(loop)) {
     data = toString(loop);
   } else if (isExpression(loop)) {
-    data = loop.slice(2, -2);
+    data = parseExpression(loop) || '[]'
   }
 
   // add loop key
-  const tagEnd = render.match(/^<.+?\s/)[0].length;
+  const tagEnd = render.match(/^<.+?(\s|\b(?=>))/)[0].length;
   render = `${render.slice(0, tagEnd)} key={${loopArgIndex}}${render.slice(
     tagEnd
   )}`;
@@ -218,9 +228,13 @@ const parseLoop = (loop, loopArg, render, states) => {
     stateValue = `state.${data.split('.').pop()}`;
   }
 
+  if (schema.condition) {
+    render = parseCondition(schema.condition, render);
+  }
+
   return {
     hookState: [],
-    value: `${stateValue}.map((${loopArgItem}, ${loopArgIndex}) => {
+    value: `(${stateValue} || []).map((${loopArgItem}, ${loopArgIndex}) => {
       return (${render});
     })`
   };
