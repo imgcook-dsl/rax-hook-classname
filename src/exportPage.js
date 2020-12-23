@@ -14,6 +14,7 @@ const {
   parseDataSource,
   line2Hump,
   getText,
+  isExpression
 } = require('./utils');
 
 function exportPage(schema, option) {
