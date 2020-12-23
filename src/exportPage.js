@@ -73,6 +73,18 @@ function exportPage(schema, option) {
     const className = schema.props && schema.props.className;
     const classString = className ? ` className="${className}"` : '';
 
+    let styles = {}
+    let codeStyles = {}
+    Object.keys(schema.props.style || {}).forEach(key => {
+      if (isExpression(schema.props.style[key])) {
+        codeStyles[key] = schema.props.style[key]
+      } else {
+        styles[key] = schema.props.style[key]
+      }
+    });
+
+    schema.props.codeStyle = codeStyles;
+
     if (className) {
       style[className] = parseStyle(schema.props.style, scale);
       styleRpx[className] = parseStyle(deepClone(schema.props.style), scale, 'rpx');
@@ -84,6 +96,12 @@ function exportPage(schema, option) {
     Object.keys(schema.props).forEach(key => {
       if (['className', 'style', 'text', 'src', 'key'].indexOf(key) === -1) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
+      }
+
+      if (key === 'codeStyle') {
+        if(JSON.stringify(schema.props[key]) !== '{}') {
+          props += ` style={${parseProps(schema.props[key])}}`;
+        }
       }
 
       // fix attr when type is not text
