@@ -95,7 +95,7 @@ function exportPage(schema, option) {
     let props = '';
 
     Object.keys(schema.props).forEach(key => {
-      if (['className', 'style', 'text', 'src', 'key'].indexOf(key) === -1) {
+      if (['className', 'style', 'text', 'src', 'key', 'codeStyle'].indexOf(key) === -1) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
       }
 
