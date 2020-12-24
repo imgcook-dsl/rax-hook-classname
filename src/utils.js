@@ -146,11 +146,7 @@ const parseFunction = func => {
 const parseProps = (value, isReactNode) => {
   if (typeof value === 'string') {
     if (isExpression(value)) {
-      if (isReactNode) {
-        return value.slice(1, -1);
-      } else {
-        return value.slice(2, -2);
-      }
+      return parseExpression(value, isReactNode)
     }
 
     if (isReactNode) {
@@ -159,12 +155,17 @@ const parseProps = (value, isReactNode) => {
       return `'${value}'`;
     }
   } else if (typeof value === 'function') {
-    const { params, content } = parseFunction(value);
+    const {params, content} = parseFunction(value);
     return `(${params}) => {${content}}`;
+  } else if (typeof value === 'boolean' || typeof value === 'number') {
+    return String(value)
   } else if (typeof value === 'object') {
-    return `${JSON.stringify(value)}`;
-  } else {
-    return value;
+    if (Array.isArray(value)) {
+      return `[${value.map(v => parseProps(v)).join(', ')}]`
+    }
+    return `{${Object.keys(value).map(key => {
+      return `${/^\w+$/.test(key) ? key :  `'${key}'`}: ${parseProps(value[key])}`
+    }).join(', ')}}`
   }
 };
 
