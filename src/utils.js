@@ -118,6 +118,7 @@ const parseStyle = (style, scale, unit) => {
       case 'borderTopRightRadius':
       case 'borderTopLeftRadius':
       case 'borderRadius':
+      case 'textIndent':
         style[key] = parseInt(style[key]) * scale;
         if (unit && style[key]) {
           style[key] = `${style[key]}${unit}`;
@@ -181,11 +182,17 @@ const parseCondition = (condition, render) => {
 };
 
 // flexDirection -> flex-direction
-const parseCamelToLine = string => {
-  return string
-    .split(/(?=[A-Z])/)
-    .join('-')
-    .toLowerCase();
+const parseCamelToLine = str => {
+
+  str = str
+  .split(/(?=[A-Z])/)
+  .join('-');
+
+  if (/^[A-Z].*/.test(str)) {
+    str = '-' + str;
+  }
+
+  return str.toLowerCase();
 };
 
 // style obj -> css
