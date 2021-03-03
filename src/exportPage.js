@@ -352,6 +352,9 @@ function exportPage(schema, option) {
   `,
     prettierJsOpt
   );
+
+  const prefix = schema.props && schema.props.className;
+
   return [
     {
       panelName: `${fileName}.jsx`,
@@ -367,12 +370,12 @@ function exportPage(schema, option) {
     },
     {
       panelName: `${fileName}.css`,
-      panelValue: prettier.format(`${generateCSS(style)}`, prettierCssOpt),
+      panelValue: prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt),
       panelType: 'css'
     },
     {
       panelName: `${fileName}.rpx.css`,
-      panelValue: prettier.format(`${generateCSS(styleRpx)}`, prettierCssOpt),
+      panelValue: prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt),
       panelType: 'css'
     }
   ];

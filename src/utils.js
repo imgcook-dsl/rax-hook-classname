@@ -196,11 +196,11 @@ const parseCamelToLine = str => {
 };
 
 // style obj -> css
-const generateCSS = style => {
+const generateCSS = (style, prefix) => {
   let css = '';
 
   for (let layer in style) {
-    css += `.${layer} {`;
+    css += `${prefix && prefix !== layer ? '.' + prefix + ' ' : ''}.${layer} {`;
     for (let key in style[layer]) {
       css += `${parseCamelToLine(key)}: ${style[layer][key]};\n`;
     }
