@@ -268,7 +268,7 @@ function exportMod(schema, option) {
         result += generateRender(schema);
       }
     }
-
+    // console.log('after transform---',result)
     return result;
   };
 
@@ -321,6 +321,32 @@ function exportMod(schema, option) {
 
   const prefix = schema.props && schema.props.className;
 
+  const animation = schema.animation;
+  // console.log('animation---',animation);
+
+  const transAnimation = function (animation) {
+    let keyFrames = ``
+    for(let i of animation.keyframes){
+      console.log(i);
+      keyFrames += (
+  `
+  ${(((i.offset * 10000))/100.00).toFixed(0) + '%'} {
+    ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+    ${i.transform? 'transform: '.concat(i.transform) + ';' : ''}
+  }
+  `
+      )
+    }
+    let keyframes = (
+`
+@keyframes ${animation.timing.delay} {
+  ${keyFrames}
+}
+`
+    )
+    return keyframes
+  }
+  console.log('animate---',transAnimation(animation));
   return [
     {
       panelName: `${fileName}.jsx`,
