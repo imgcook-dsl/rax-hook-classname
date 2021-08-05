@@ -196,10 +196,13 @@ const parseCamelToLine = str => {
 };
 
 // style obj -> css
-const generateCSS = (style, prefix) => {
+const generateCSS = (style, prefix, animation) => {
   let css = '';
 
   for (let layer in style) {
+    // console.log('layer---',layer);
+    // console.log('style---',style);
+    console.log('prefix',prefix);
     css += `${prefix && prefix !== layer ? '.' + prefix + ' ' : ''}.${layer} {`;
     for (let key in style[layer]) {
       css += `${parseCamelToLine(key)}: ${style[layer][key]};\n`;
@@ -209,6 +212,31 @@ const generateCSS = (style, prefix) => {
 
   return css;
 };
+
+// animation obj -> css
+// const transAnimation = function (animation) {
+//   let keyFrames = ``
+//   for(let i of animation.keyframes){
+//     console.log(i);
+//     keyFrames += (
+// `
+// ${(((i.offset * 10000))/100.00).toFixed(0) + '%'} {
+//   ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+//   ${i.transform? 'transform: '.concat(i.transform) + ';' : ''}
+// }
+// `
+//     )
+//   }
+//   let keyframes = (
+// `
+// @keyframes ${animation.timing.delay} {
+// ${keyFrames}
+// }
+// `
+//   )
+//   return keyframes
+// }
+// console.log('animate---',transAnimation(animation));
 
 // parse loop render
 const parseLoop = (loop, loopArg, render, states, schema) => {
