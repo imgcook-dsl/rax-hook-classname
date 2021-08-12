@@ -6,7 +6,8 @@ module.exports = {
           "display": "flex",
           "alignItems": "center",
           "flexDirection": "row",
-          "height": "26px"
+          "height": "26px",
+          "animation": "123456"
       },
       "className": "mod"
   },

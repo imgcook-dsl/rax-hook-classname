@@ -6,7 +6,7 @@ const path = require('path');
 const prettier = require('prettier');
 const { NodeVM } = require('vm2');
 const _ = require('lodash');
-const data = require('./animation');
+const data = require('./animation1');
 const componentsMap = require('./componentsMap');
 const helper = require('@imgcook/dsl-helper');
 
@@ -42,7 +42,7 @@ co(function*() {
     };
 
     const prettierRes = prettier.format(ret, prettierOpt);
-    
+
     fs.writeFileSync(path.join(__dirname, '../code/result.js'), prettierRes);
   }
 });
