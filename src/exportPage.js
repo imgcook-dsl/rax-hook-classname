@@ -395,23 +395,6 @@ function exportPage(schema, option) {
     }
     return animationRes;
   };
-  const transAnimation = function(animation) {
-    let keyFrames = ``;
-    for (let i of animation.keyframes) {
-      keyFrames += `
-  ${((i.offset * 10000) / 100.0).toFixed(0) + "%"} {
-    ${i.opacity ? "opacity: ".concat(i.opacity) + ";" : ""}
-    ${i.transform ? "transform: ".concat(i.transform) + ";" : ""}
-  }
-  `;
-    }
-    let keyframes = `
-@keyframes ${animation.name} {
-  ${keyFrames}
-}
-`;
-    return keyframes;
-  };
 
   const transAnimation = function(animation) {
     let keyFrames = ``;
@@ -430,6 +413,7 @@ function exportPage(schema, option) {
 `;
     return keyframes;
   };
+  const animationKeyframes = addAnimation(schema);
   return [
     {
       panelName: `${fileName}.jsx`,
@@ -445,19 +429,16 @@ function exportPage(schema, option) {
     },
     {
       panelName: `${fileName}.css`,
-      panelValue: prettier.format(
-        `${generateCSS(style, prefix)}`,
-        prettierCssOpt,
-        "12345"
-      ),
+      panelValue:
+        prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
       panelType: "css",
     },
     {
       panelName: `${fileName}.rpx.css`,
-      panelValue: prettier.format(
-        `${generateCSS(styleRpx, prefix)}`,
-        prettierCssOpt
-      ),
+      panelValue:
+        prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
       panelType: "css",
     },
   ];
