@@ -390,12 +390,16 @@ function exportMod(schema, option) {
 `;
     return keyframes;
   };
-  // console.log("11111", addAnimation(schema));
-  console.log(
-    "-------",
-    prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt),
-    addAnimation(schema)
-  );
+  // console.log(
+  //   "-------",
+  //   prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt),
+  //   addAnimation(schema)
+  // );
+  // console.log(
+  //   prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
+  //     animationKeyframes
+  // );
+  animationKeyframes = addAnimation(schema);
   return [
     {
       panelName: `${fileName}.jsx`,
@@ -405,20 +409,16 @@ function exportMod(schema, option) {
     },
     {
       panelName: `${fileName}.css`,
-      panelValue: prettier.format(
-        `${generateCSS(style, prefix)}`,
-        prettierCssOpt
-        // addAnimation(schema)
-      ),
+      panelValue:
+        prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
       panelType: "css",
     },
     {
       panelName: `${fileName}.rpx.css`,
-      panelValue: prettier.format(
-        `${generateCSS(styleRpx, prefix)}`,
-        prettierCssOpt
-        // addAnimation(schema)
-      ),
+      panelValue:
+        prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
       panelType: "css",
     },
   ];
