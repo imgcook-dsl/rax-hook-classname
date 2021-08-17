@@ -206,8 +206,6 @@ const generateCSS = (style, prefix, animation) => {
     }
     css += "}";
   }
-  // let keyframes = transAnimation(animation)
-  // css += keyframes
   return css;
 };
 
@@ -230,7 +228,6 @@ ${keyFrames}
 `;
   return keyframes;
 };
-// console.log('animate---',transAnimation(animation));
 
 // parse loop render
 const parseLoop = (loop, loopArg, render, states, schema) => {

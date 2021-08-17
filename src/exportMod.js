@@ -219,10 +219,6 @@ function exportMod(schema, option) {
     let result = "";
     let animationRes = ``;
     const blockName = schema.fileName || schema.id;
-    // if (schema.animation) {
-    //   console.log(schema.animation);
-    //   animationRes += transAnimation(schema.animation);
-    // }
     if (Array.isArray(schema)) {
       schema.forEach((layer) => {
         result += transform(layer);
@@ -293,7 +289,6 @@ function exportMod(schema, option) {
         result += generateRender(schema);
       }
     }
-    // console.log("after transform---", result);
     return result;
   };
 
@@ -390,15 +385,7 @@ function exportMod(schema, option) {
 `;
     return keyframes;
   };
-  // console.log(
-  //   "-------",
-  //   prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt),
-  //   addAnimation(schema)
-  // );
-  // console.log(
-  //   prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
-  //     animationKeyframes
-  // );
+
   animationKeyframes = addAnimation(schema);
   return [
     {
