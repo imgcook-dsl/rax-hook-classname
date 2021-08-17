@@ -4,9 +4,9 @@ const isExpression = (value) => {
 
 const parseExpression = (value, isReactNode) => {
   if (isReactNode) {
-    value = value.slice(1, -1).replace(/this\./gim, "");
+    value = value.slice(1, -1).replace(/this\./gim, '');
   } else {
-    value = value.slice(2, -2).replace(/this\./gim, "");
+    value = value.slice(2, -2).replace(/this\./gim, '');
   }
   return value;
 };
@@ -21,7 +21,7 @@ const line2Hump = (str) => {
 };
 
 const isEmptyObj = (o) => {
-  if (o !== null && Object.prototype.toString.call(o) === "[object Object]") {
+  if (o !== null && Object.prototype.toString.call(o) === '[object Object]') {
     return !Object.keys(o).length;
   }
   return false;
@@ -41,10 +41,10 @@ const transComponentsMap = (compsMap = {}) => {
           comp.packageName = dependence.package;
         }
         if (!comp.dependenceVersion) {
-          comp.dependenceVersion = "*";
+          comp.dependenceVersion = '*';
         }
         if (/^\d/.test(comp.dependenceVersion)) {
-          comp.dependenceVersion = "^" + comp.dependenceVersion;
+          comp.dependenceVersion = '^' + comp.dependenceVersion;
         }
       } catch (e) {}
       obj[componentName] = comp;
@@ -54,15 +54,15 @@ const transComponentsMap = (compsMap = {}) => {
 };
 
 const toString = (value) => {
-  if ({}.toString.call(value) === "[object Function]") {
+  if ({}.toString.call(value) === '[object Function]') {
     return value.toString();
   }
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return value;
   }
-  if (typeof value === "object") {
+  if (typeof value === 'object') {
     return JSON.stringify(value, (key, value) => {
-      if (typeof value === "function") {
+      if (typeof value === 'function') {
         return value.toString();
       } else {
         return value;
@@ -79,11 +79,11 @@ const toUpperCaseStart = (value) => {
 
 const deepClone = (obj) => {
   let objClone = Array.isArray(obj) ? [] : {};
-  if (obj && typeof obj === "object") {
+  if (obj && typeof obj === 'object') {
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         // 判断ojb子元素是否为对象，如果是，递归复制
-        obj[key] && typeof obj[key] === "object"
+        obj[key] && typeof obj[key] === 'object'
           ? (objClone[key] = deepClone(obj[key]))
           : (objClone[key] = obj[key]);
       }
@@ -96,29 +96,29 @@ const deepClone = (obj) => {
 const parseStyle = (style, scale, unit) => {
   for (let key in style) {
     switch (key) {
-      case "fontSize":
-      case "marginTop":
-      case "marginBottom":
-      case "paddingTop":
-      case "paddingBottom":
-      case "height":
-      case "top":
-      case "bottom":
-      case "width":
-      case "maxWidth":
-      case "left":
-      case "right":
-      case "paddingRight":
-      case "paddingLeft":
-      case "marginLeft":
-      case "marginRight":
-      case "lineHeight":
-      case "borderBottomRightRadius":
-      case "borderBottomLeftRadius":
-      case "borderTopRightRadius":
-      case "borderTopLeftRadius":
-      case "borderRadius":
-      case "textIndent":
+      case 'fontSize':
+      case 'marginTop':
+      case 'marginBottom':
+      case 'paddingTop':
+      case 'paddingBottom':
+      case 'height':
+      case 'top':
+      case 'bottom':
+      case 'width':
+      case 'maxWidth':
+      case 'left':
+      case 'right':
+      case 'paddingRight':
+      case 'paddingLeft':
+      case 'marginLeft':
+      case 'marginRight':
+      case 'lineHeight':
+      case 'borderBottomRightRadius':
+      case 'borderBottomLeftRadius':
+      case 'borderTopRightRadius':
+      case 'borderTopLeftRadius':
+      case 'borderRadius':
+      case 'textIndent':
         style[key] = parseInt(style[key]) * scale;
         if (unit && style[key]) {
           style[key] = `${style[key]}${unit}`;
@@ -134,8 +134,8 @@ const parseFunction = (func) => {
   const funcString = func.toString();
   const params = funcString.match(/\([^\(\)]*\)/)[0].slice(1, -1);
   const content = funcString.slice(
-    funcString.indexOf("{") + 1,
-    funcString.lastIndexOf("}")
+    funcString.indexOf('{') + 1,
+    funcString.lastIndexOf('}')
   );
   return {
     params,
@@ -145,7 +145,7 @@ const parseFunction = (func) => {
 
 // parse layer props(static values or expression)
 const parseProps = (value, isReactNode) => {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     if (isExpression(value)) {
       return parseExpression(value, isReactNode);
     }
@@ -155,14 +155,14 @@ const parseProps = (value, isReactNode) => {
     } else {
       return `'${value}'`;
     }
-  } else if (typeof value === "function") {
+  } else if (typeof value === 'function') {
     const { params, content } = parseFunction(value);
     return `(${params}) => {${content}}`;
-  } else if (typeof value === "boolean" || typeof value === "number") {
+  } else if (typeof value === 'boolean' || typeof value === 'number') {
     return String(value);
-  } else if (typeof value === "object") {
+  } else if (typeof value === 'object') {
     if (Array.isArray(value)) {
-      return `[${value.map((v) => parseProps(v)).join(", ")}]`;
+      return `[${value.map((v) => parseProps(v)).join(', ')}]`;
     }
     return `{${Object.keys(value)
       .map((key) => {
@@ -170,15 +170,15 @@ const parseProps = (value, isReactNode) => {
           value[key]
         )}`;
       })
-      .join(", ")}}`;
+      .join(', ')}}`;
   }
 };
 
 // parse condition: whether render the layer
 const parseCondition = (condition, render) => {
-  if (typeof condition === "boolean") {
-    return condition ? `${render}` : "";
-  } else if (typeof condition === "string" && isExpression(condition)) {
+  if (typeof condition === 'boolean') {
+    return condition ? `${render}` : '';
+  } else if (typeof condition === 'string' && isExpression(condition)) {
     condition = parseExpression(condition);
     return condition ? `(${condition}) && ${render}` : `${render}`;
   }
@@ -187,10 +187,10 @@ const parseCondition = (condition, render) => {
 
 // flexDirection -> flex-direction
 const parseCamelToLine = (str) => {
-  str = str.split(/(?=[A-Z])/).join("-");
+  str = str.split(/(?=[A-Z])/).join('-');
 
   if (/^[A-Z].*/.test(str)) {
-    str = "-" + str;
+    str = '-' + str;
   }
   // console.log('str----',str);
   return str.toLowerCase();
@@ -198,13 +198,13 @@ const parseCamelToLine = (str) => {
 
 // style obj -> css
 const generateCSS = (style, prefix, animation) => {
-  let css = "";
+  let css = '';
   for (let layer in style) {
-    css += `${prefix && prefix !== layer ? "." + prefix + " " : ""}.${layer} {`;
+    css += `${prefix && prefix !== layer ? '.' + prefix + ' ' : ''}.${layer} {`;
     for (let key in style[layer]) {
       css += `${parseCamelToLine(key)}: ${style[layer][key]};\n`;
     }
-    css += "}";
+    css += '}';
   }
   return css;
 };
@@ -215,9 +215,9 @@ const transAnimation = function(animation) {
   for (let i of animation.keyframes) {
     console.log(i);
     keyFrames += `
-${((i.offset * 10000) / 100.0).toFixed(0) + "%"} {
-  ${i.opacity ? "opacity: ".concat(i.opacity) + ";" : ""}
-  ${i.transform ? "transform: ".concat(i.transform) + ";" : ""}
+${((i.offset * 10000) / 100.0).toFixed(0) + '%'} {
+  ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+  ${i.transform ? 'transform: '.concat(i.transform) + ';' : ''}
 }
 `;
   }
@@ -232,13 +232,13 @@ ${keyFrames}
 // parse loop render
 const parseLoop = (loop, loopArg, render, states, schema) => {
   let data;
-  let loopArgItem = (loopArg && loopArg[0]) || "item";
-  let loopArgIndex = (loopArg && loopArg[1]) || "index";
+  let loopArgItem = (loopArg && loopArg[0]) || 'item';
+  let loopArgIndex = (loopArg && loopArg[1]) || 'index';
 
   if (Array.isArray(loop)) {
     data = toString(loop);
   } else if (isExpression(loop)) {
-    data = parseExpression(loop) || "[]";
+    data = parseExpression(loop) || '[]';
   }
 
   // add loop key
@@ -248,11 +248,11 @@ const parseLoop = (loop, loopArg, render, states, schema) => {
   )}`;
 
   // remove `this`
-  const re = new RegExp(`this.${loopArgItem}`, "g");
+  const re = new RegExp(`this.${loopArgItem}`, 'g');
   render = render.replace(re, loopArgItem);
   let stateValue = data;
   if (data.match(/this\.state\./)) {
-    stateValue = `state.${data.split(".").pop()}`;
+    stateValue = `state.${data.split('.').pop()}`;
   }
 
   if (schema.condition) {
@@ -269,7 +269,7 @@ const parseLoop = (loop, loopArg, render, states, schema) => {
 
 // parse state
 const parseState = (states) => {
-  let stateName = "state";
+  let stateName = 'state';
   // hooks state
   return `const [${stateName}, set${toUpperCaseStart(
     stateName
@@ -279,33 +279,33 @@ const parseState = (states) => {
 // replace state
 const replaceState = (render) => {
   // remove `this`
-  let stateName = "state";
-  const re = new RegExp(`this.state`, "g");
+  let stateName = 'state';
+  const re = new RegExp(`this.state`, 'g');
   return render.replace(re, stateName);
 };
 
 // replace state
 const parseLifeCycles = (schema, init) => {
   let lifeCycles = [];
-  if (!schema.lifeCycles["_constructor"] && init) {
-    schema.lifeCycles["_constructor"] = `function _constructor() {}`;
+  if (!schema.lifeCycles['_constructor'] && init) {
+    schema.lifeCycles['_constructor'] = `function _constructor() {}`;
   }
 
   Object.keys(schema.lifeCycles).forEach((name) => {
     let { params, content } = parseFunction(schema.lifeCycles[name]);
     content = replaceState(content);
     switch (name) {
-      case "_constructor": {
+      case '_constructor': {
         init.push(content);
         lifeCycles.unshift(`
           // constructor
           useState(()=>{
-            ${init.join("\n")}
+            ${init.join('\n')}
           })
         `);
         break;
       }
-      case "componentDidMount": {
+      case 'componentDidMount': {
         lifeCycles.push(`
           // componentDidMount
           useEffect(()=>{
@@ -314,7 +314,7 @@ const parseLifeCycles = (schema, init) => {
         `);
         break;
       }
-      case "componentDidUpdate": {
+      case 'componentDidUpdate': {
         lifeCycles.push(`
           // componentDidUpdate
           useEffect(()=>{
@@ -323,7 +323,7 @@ const parseLifeCycles = (schema, init) => {
         `);
         break;
       }
-      case "componentWillUnMount": {
+      case 'componentWillUnMount': {
         lifeCycles.push(`
           // componentWillUnMount
           useEffect(()=>{
@@ -358,13 +358,13 @@ const parseDataSource = (data, imports) => {
   let singleImport;
 
   switch (action) {
-    case "fetch":
+    case 'fetch':
       singleImport = `import {fetch} from 'whatwg-fetch';`;
       if (!existImport(imports, singleImport)) {
         imports.push({
           import: singleImport,
-          package: "whatwg-fetch",
-          version: "^3.0.0",
+          package: 'whatwg-fetch',
+          version: '^3.0.0',
         });
       }
       payload = {
@@ -372,25 +372,25 @@ const parseDataSource = (data, imports) => {
       };
 
       break;
-    case "jsonp":
+    case 'jsonp':
       singleImport = `import {fetchJsonp} from 'fetch-jsonp';`;
       if (!existImport(imports, singleImport)) {
         imports.push({
           import: singleImport,
-          package: "fetch-jsonp",
-          version: "^1.1.3",
+          package: 'fetch-jsonp',
+          version: '^1.1.3',
         });
       }
       break;
   }
 
   Object.keys(data.options).forEach((key) => {
-    if (["uri", "method", "params"].indexOf(key) === -1) {
+    if (['uri', 'method', 'params'].indexOf(key) === -1) {
       payload[key] = toString(data.options[key]);
     }
   });
 
-  let comma = isEmptyObj(payload) ? "" : ",";
+  let comma = isEmptyObj(payload) ? '' : ',';
   // params parse should in string template
   if (params) {
     payload = `${toString(payload).slice(0, -1)} ${comma} body: ${
@@ -414,7 +414,7 @@ const parseDataSource = (data, imports) => {
   `;
   }
 
-  result += "}";
+  result += '}';
 
   return {
     value: `function ${name}() ${result}`,
@@ -424,14 +424,14 @@ const parseDataSource = (data, imports) => {
 
 // get children text
 const getText = (schema) => {
-  let text = "";
+  let text = '';
 
   const getChildrenText = (schema) => {
     const type = schema.componentName.toLowerCase();
-    if (type === "text") {
+    if (type === 'text') {
       text += parseProps(schema.props.text || schema.text, true).replace(
         /\{/g,
-        "${"
+        '${'
       );
     }
 

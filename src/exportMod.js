@@ -1,4 +1,4 @@
-const { add } = require("lodash");
+const { add } = require('lodash');
 const {
   toString,
   existImport,
@@ -16,7 +16,7 @@ const {
   line2Hump,
   getText,
   isExpression,
-} = require("./utils");
+} = require('./utils');
 
 function exportMod(schema, option) {
   const { prettier, scale, componentsMap } = option;
@@ -61,7 +61,7 @@ function exportMod(schema, option) {
       componentMap.package || componentMap.packageName || componentName;
     if (
       packageName &&
-      ["view", "image", "text", "picture"].indexOf(packageName.toLowerCase()) >=
+      ['view', 'image', 'text', 'picture'].indexOf(packageName.toLowerCase()) >=
         0
     ) {
       packageName = `rax-${packageName.toLowerCase()}`;
@@ -71,7 +71,7 @@ function exportMod(schema, option) {
       imports.push({
         import: singleImport,
         package: packageName,
-        version: componentMap.dependenceVersion || "*",
+        version: componentMap.dependenceVersion || '*',
       });
     }
   };
@@ -81,7 +81,7 @@ function exportMod(schema, option) {
     const componentName = schema.componentName;
     const type = schema.componentName.toLowerCase();
     const className = schema.props && schema.props.className;
-    const classString = className ? ` className="${className}"` : "";
+    const classString = className ? ` className="${className}"` : '';
 
     let styles = {};
     let codeStyles = {};
@@ -97,33 +97,33 @@ function exportMod(schema, option) {
 
     if (className) {
       style[className] = parseStyle(styles, scale);
-      styleRpx[className] = parseStyle(deepClone(styles), scale, "rpx");
+      styleRpx[className] = parseStyle(deepClone(styles), scale, 'rpx');
     }
 
     let xml;
-    let props = "";
+    let props = '';
 
     Object.keys(schema.props).forEach((key) => {
       if (
-        ["className", "style", "text", "src", "key", "codeStyle"].indexOf(
+        ['className', 'style', 'text', 'src', 'key', 'codeStyle'].indexOf(
           key
         ) === -1
       ) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
       }
-      if (key === "codeStyle") {
-        if (JSON.stringify(schema.props[key]) !== "{}") {
+      if (key === 'codeStyle') {
+        if (JSON.stringify(schema.props[key]) !== '{}') {
           props += ` style={${parseProps(schema.props[key])}}`;
         }
       }
 
       // fix attr when type is not text
-      if (type !== "text" && ["text"].includes(key)) {
+      if (type !== 'text' && ['text'].includes(key)) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
       }
 
       // 无障碍能力
-      if (["onClick"].indexOf(key) === 0) {
+      if (['onClick'].indexOf(key) === 0) {
         props += ` accessible={true} role="link" aria-label={\`${getText(
           schema
         )}\`}`;
@@ -131,38 +131,38 @@ function exportMod(schema, option) {
     });
 
     // 无障碍能力
-    if (type === "link" && !props.match("accessible")) {
+    if (type === 'link' && !props.match('accessible')) {
       props += ` accessible={true} aria-label={\`${getText(schema)}\`}`;
     }
 
     switch (type) {
-      case "text":
-        collectImports("Text");
+      case 'text':
+        collectImports('Text');
         let innerText = parseProps(schema.props.text || schema.text, true);
         if (innerText.match(/this\.props/)) {
-          innerText = innerText.replace(/this\./, "");
+          innerText = innerText.replace(/this\./, '');
         }
-        xml = `<Text${classString}${props}>${innerText || ""}</Text>`;
+        xml = `<Text${classString}${props}>${innerText || ''}</Text>`;
         break;
-      case "image":
-        collectImports("Image");
-        if (!props.match("onClick")) {
-          props += " aria-hidden={true}";
+      case 'image':
+        collectImports('Image');
+        if (!props.match('onClick')) {
+          props += ' aria-hidden={true}';
         }
         if (schema.props.source && schema.props.source.uri) {
           xml = `<Image${classString}${props} />`;
         } else {
           let source = parseProps(schema.props.src);
-          source = (source && `source={{uri: ${source}}}`) || "";
+          source = (source && `source={{uri: ${source}}}`) || '';
           xml = `<Image${classString}${props} ${source} />`;
         }
         break;
-      case "div":
-      case "view":
-      case "page":
-      case "block":
-      case "component":
-        collectImports("View");
+      case 'div':
+      case 'view':
+      case 'page':
+      case 'block':
+      case 'component':
+        collectImports('View');
         if (schema.children && schema.children.length) {
           xml = `<View${classString}${props}>${transform(
             schema.children
@@ -181,7 +181,7 @@ function exportMod(schema, option) {
           xml = `<${componentName}${classString}${props}>${transform(
             schema.children
           )}</${componentName}>`;
-        } else if (typeof schema.children === "string") {
+        } else if (typeof schema.children === 'string') {
           xml = `<${componentName}${classString}${props} >${schema.children}</${componentName}>`;
         } else {
           xml = `<${componentName}${classString}${props} />`;
@@ -207,7 +207,7 @@ function exportMod(schema, option) {
     }
     if (
       schema.loop ||
-      (schema.condition && typeof schema.condition === "string")
+      (schema.condition && typeof schema.condition === 'string')
     ) {
       xml = `{${xml}}`;
     }
@@ -216,7 +216,7 @@ function exportMod(schema, option) {
 
   // parse schema
   const transform = (schema) => {
-    let result = "";
+    let result = '';
     let animationRes = ``;
     const blockName = schema.fileName || schema.id;
     if (Array.isArray(schema)) {
@@ -226,7 +226,7 @@ function exportMod(schema, option) {
     } else {
       const type = schema.componentName.toLowerCase();
 
-      if (["page"].indexOf(type) !== -1 || blockName === fileName) {
+      if (['page'].indexOf(type) !== -1 || blockName === fileName) {
         // 容器组件处理: state/method/dataSource/lifeCycle
         const states = [];
 
@@ -244,9 +244,9 @@ function exportMod(schema, option) {
 
         if (schema.dataSource && Array.isArray(schema.dataSource.list)) {
           schema.dataSource.list.forEach((item) => {
-            if (typeof item.isInit === "boolean" && item.isInit) {
+            if (typeof item.isInit === 'boolean' && item.isInit) {
               init.push(`${item.id}();`);
-            } else if (typeof item.isInit === "string") {
+            } else if (typeof item.isInit === 'string') {
               init.push(`if (${parseProps(item.isInit)}) { ${item.id}(); }`);
             }
             const parseDataSourceData = parseDataSource(item, imports);
@@ -270,11 +270,11 @@ function exportMod(schema, option) {
         if (statesData) {
           useState.push(parseState(statesData));
         }
-      } else if (["block"].indexOf(type) !== -1) {
-        let props = "";
+      } else if (['block'].indexOf(type) !== -1) {
+        let props = '';
         Object.keys(schema.props).forEach((key) => {
           if (
-            ["className", "style", "text", "src", "key"].indexOf(key) === -1
+            ['className', 'style', 'text', 'src', 'key'].indexOf(key) === -1
           ) {
             props += ` ${key}={${parseProps(schema.props[key])}}`;
           }
@@ -303,35 +303,35 @@ function exportMod(schema, option) {
   transform(schema);
   // output
   const prettierJsOpt = {
-    parser: "babel",
+    parser: 'babel',
     printWidth: 120,
     singleQuote: true,
   };
   const prettierCssOpt = {
-    parser: "css",
+    parser: 'css',
   };
   const hooksView = generateRender(schema);
-  const hasDispatch = hooksView.match("dispatch");
+  const hasDispatch = hooksView.match('dispatch');
   const indexValue = prettier.format(
     `
     'use strict';
     import { createElement, useState, useEffect, memo } from 'rax';
-    ${imports.map((i) => i.import).join("\n")}
-    ${importMods.map((i) => i.import).join("\n")}
-    ${hasDispatch ? "import { IndexContext } from '../../context';" : ""}
+    ${imports.map((i) => i.import).join('\n')}
+    ${importMods.map((i) => i.import).join('\n')}
+    ${hasDispatch ? "import { IndexContext } from '../../context';" : ''}
 
     import './${fileName}.css';
 
-    ${utils.join("\n")}
+    ${utils.join('\n')}
     export default memo((props) => {
-      ${useState.join("\n")}
+      ${useState.join('\n')}
       ${
         hasDispatch
-          ? "const { state: { txt }, dispatch} = useContext(IndexContext);"
-          : ""
+          ? 'const { state: { txt }, dispatch} = useContext(IndexContext);'
+          : ''
       }
-      ${lifeCycles.join("\n")}
-      ${methods.join("\n")}
+      ${lifeCycles.join('\n')}
+      ${methods.join('\n')}
       ${
         hooksView.match(/^\{true\ \&\& /)
           ? `return (<View>${hooksView}</View>)`
@@ -345,7 +345,7 @@ function exportMod(schema, option) {
   const prefix = schema.props && schema.props.className;
 
   let getAllLayers = function(layers, schema) {
-    if (schema.hasOwnProperty("children")) {
+    if (schema.hasOwnProperty('children')) {
       for (let i of schema.children) {
         layers.push(i);
         getAllLayers(layers, i);
@@ -372,9 +372,9 @@ function exportMod(schema, option) {
     let keyFrames = ``;
     for (let i of animation.keyframes) {
       keyFrames += `
-  ${((i.offset * 10000) / 100.0).toFixed(0) + "%"} {
-    ${i.opacity ? "opacity: ".concat(i.opacity) + ";" : ""}
-    ${i.transform ? "transform: ".concat(i.transform) + ";" : ""}
+  ${((i.offset * 10000) / 100.0).toFixed(0) + '%'} {
+    ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+    ${i.transform ? 'transform: '.concat(i.transform) + ';' : ''}
   }
   `;
     }
@@ -391,7 +391,7 @@ function exportMod(schema, option) {
     {
       panelName: `${fileName}.jsx`,
       panelValue: indexValue,
-      panelType: "js",
+      panelType: 'js',
       panelImports: imports,
     },
     {
@@ -399,14 +399,14 @@ function exportMod(schema, option) {
       panelValue:
         prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt) +
         animationKeyframes,
-      panelType: "css",
+      panelType: 'css',
     },
     {
       panelName: `${fileName}.rpx.css`,
       panelValue:
         prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
         animationKeyframes,
-      panelType: "css",
+      panelType: 'css',
     },
   ];
 }
