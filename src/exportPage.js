@@ -328,8 +328,8 @@ function exportPage(schema, option) {
     `
     'use strict';
     import { createElement, useState, useEffect } from 'rax';
-    ${imports.map(i => i.import).join('\n')}
-    ${importMods.map(i => i.import).join('\n')}
+    ${imports.map(i => i._import).join('\n')}
+    ${importMods.map(i => i._import).join('\n')}
     import { ${
       hasDispatch ? 'IndexContext, IndexProvider' : 'IndexProvider'
     } } from './context';

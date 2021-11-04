@@ -323,7 +323,7 @@ const parseLifeCycles = (schema, init) => {
 const existImport = (imports, singleImport) => {
   let exist = false;
   imports.forEach(item => {
-    if (item.import === singleImport) {
+    if (item._import === singleImport) {
       exist = true;
     }
   });

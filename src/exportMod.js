@@ -297,8 +297,8 @@ function exportMod(schema, option) {
     `
     'use strict';
     import { createElement, useState, useEffect, memo } from 'rax';
-    ${imports.map(i => i.import).join('\n')}
-    ${importMods.map(i => i.import).join('\n')}
+    ${imports.map(i => i._import).join('\n')}
+    ${importMods.map(i => i._import).join('\n')}
     ${hasDispatch ? "import { IndexContext } from '../../context';" : ''}
 
     import './${fileName}.css';
