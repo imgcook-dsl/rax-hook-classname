@@ -65,7 +65,7 @@ function exportPage(schema, option) {
     const singleImport = `import ${componentName} from '${packageName}'`;
     if (!existImport(imports, singleImport)) {
       imports.push({
-        import: singleImport,
+        _import: singleImport,
         package: packageName,
         version: componentMap.dependenceVersion || '*',
       });
