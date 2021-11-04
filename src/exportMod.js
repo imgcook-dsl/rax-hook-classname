@@ -283,7 +283,7 @@ function exportMod(schema, option) {
         result += `<${line2Hump(blockName)} ${props} />`;
 
         importMods.push({
-          import: `import ${line2Hump(blockName)} from '../${blockName}';`,
+          _import: `import ${line2Hump(blockName)} from '../${blockName}';`,
         });
       } else {
         result += generateRender(schema);
