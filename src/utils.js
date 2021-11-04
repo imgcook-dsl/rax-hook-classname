@@ -1,4 +1,4 @@
-const isExpression = value => {
+const isExpression = (value) => {
   return /^\{\{.*\}\}$/.test(value);
 };
 
@@ -8,11 +8,11 @@ const parseExpression = (value, isReactNode) => {
   } else {
     value = value.slice(2, -2).replace(/this\./gim, '');
   }
-  return value
-}
+  return value;
+};
 
 // eg: hello_world => HelloWorld
-const line2Hump = str => {
+const line2Hump = (str) => {
   str = str.replace(/[_|-](\w)/g, (all, letter) => {
     return letter.toUpperCase();
   });
@@ -20,7 +20,7 @@ const line2Hump = str => {
   return str;
 };
 
-const isEmptyObj = o => {
+const isEmptyObj = (o) => {
   if (o !== null && Object.prototype.toString.call(o) === '[object Object]') {
     return !Object.keys(o).length;
   }
@@ -53,7 +53,7 @@ const transComponentsMap = (compsMap = {}) => {
   }, {});
 };
 
-const toString = value => {
+const toString = (value) => {
   if ({}.toString.call(value) === '[object Function]') {
     return value.toString();
   }
@@ -73,11 +73,11 @@ const toString = value => {
   return String(value);
 };
 
-const toUpperCaseStart = value => {
+const toUpperCaseStart = (value) => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
-const deepClone = obj => {
+const deepClone = (obj) => {
   let objClone = Array.isArray(obj) ? [] : {};
   if (obj && typeof obj === 'object') {
     for (const key in obj) {
@@ -130,7 +130,7 @@ const parseStyle = (style, scale, unit) => {
 };
 
 // parse function, return params and content
-const parseFunction = func => {
+const parseFunction = (func) => {
   const funcString = func.toString();
   const params = funcString.match(/\([^\(\)]*\)/)[0].slice(1, -1);
   const content = funcString.slice(
@@ -139,7 +139,7 @@ const parseFunction = func => {
   );
   return {
     params,
-    content
+    content,
   };
 };
 
@@ -147,7 +147,7 @@ const parseFunction = func => {
 const parseProps = (value, isReactNode) => {
   if (typeof value === 'string') {
     if (isExpression(value)) {
-      return parseExpression(value, isReactNode)
+      return parseExpression(value, isReactNode);
     }
 
     if (isReactNode) {
@@ -156,49 +156,49 @@ const parseProps = (value, isReactNode) => {
       return `'${value}'`;
     }
   } else if (typeof value === 'function') {
-    const {params, content} = parseFunction(value);
+    const { params, content } = parseFunction(value);
     return `(${params}) => {${content}}`;
   } else if (typeof value === 'boolean' || typeof value === 'number') {
-    return String(value)
+    return String(value);
   } else if (typeof value === 'object') {
     if (Array.isArray(value)) {
-      return `[${value.map(v => parseProps(v)).join(', ')}]`
+      return `[${value.map((v) => parseProps(v)).join(', ')}]`;
     }
-    return `{${Object.keys(value).map(key => {
-      return `${/^\w+$/.test(key) ? key :  `'${key}'`}: ${parseProps(value[key])}`
-    }).join(', ')}}`
+    return `{${Object.keys(value)
+      .map((key) => {
+        return `${/^\w+$/.test(key) ? key : `'${key}'`}: ${parseProps(
+          value[key]
+        )}`;
+      })
+      .join(', ')}}`;
   }
 };
 
 // parse condition: whether render the layer
 const parseCondition = (condition, render) => {
   if (typeof condition === 'boolean') {
-    return condition ? `${render}` : ''
+    return condition ? `${render}` : '';
   } else if (typeof condition === 'string' && isExpression(condition)) {
-    condition = parseExpression(condition)
-    return condition ? `(${condition}) && ${render}` : `${render}`
+    condition = parseExpression(condition);
+    return condition ? `(${condition}) && ${render}` : `${render}`;
   }
   return render;
 };
 
 // flexDirection -> flex-direction
-const parseCamelToLine = str => {
-
-  str = str
-  .split(/(?=[A-Z])/)
-  .join('-');
+const parseCamelToLine = (str) => {
+  str = str.split(/(?=[A-Z])/).join('-');
 
   if (/^[A-Z].*/.test(str)) {
     str = '-' + str;
   }
-
+  // console.log('str----',str);
   return str.toLowerCase();
 };
 
 // style obj -> css
-const generateCSS = (style, prefix) => {
+const generateCSS = (style, prefix, animation) => {
   let css = '';
-
   for (let layer in style) {
     css += `${prefix && prefix !== layer ? '.' + prefix + ' ' : ''}.${layer} {`;
     for (let key in style[layer]) {
@@ -206,8 +206,27 @@ const generateCSS = (style, prefix) => {
     }
     css += '}';
   }
-
   return css;
+};
+
+// animation obj -> css
+const transAnimation = function(animation) {
+  let keyFrames = ``;
+  for (let i of animation.keyframes) {
+    console.log(i);
+    keyFrames += `
+${((i.offset * 10000) / 100.0).toFixed(0) + '%'} {
+  ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+  ${i.transform ? 'transform: '.concat(i.transform) + ';' : ''}
+}
+`;
+  }
+  let keyframes = `
+@keyframes ${animation.name} {
+${keyFrames}
+}
+`;
+  return keyframes;
 };
 
 // parse loop render
@@ -219,7 +238,7 @@ const parseLoop = (loop, loopArg, render, states, schema) => {
   if (Array.isArray(loop)) {
     data = toString(loop);
   } else if (isExpression(loop)) {
-    data = parseExpression(loop) || '[]'
+    data = parseExpression(loop) || '[]';
   }
 
   // add loop key
@@ -244,12 +263,12 @@ const parseLoop = (loop, loopArg, render, states, schema) => {
     hookState: [],
     value: `(${stateValue} || []).map((${loopArgItem}, ${loopArgIndex}) => {
       return (${render});
-    })`
+    })`,
   };
 };
 
 // parse state
-const parseState = states => {
+const parseState = (states) => {
   let stateName = 'state';
   // hooks state
   return `const [${stateName}, set${toUpperCaseStart(
@@ -258,7 +277,7 @@ const parseState = states => {
 };
 
 // replace state
-const replaceState = render => {
+const replaceState = (render) => {
   // remove `this`
   let stateName = 'state';
   const re = new RegExp(`this.state`, 'g');
@@ -272,7 +291,7 @@ const parseLifeCycles = (schema, init) => {
     schema.lifeCycles['_constructor'] = `function _constructor() {}`;
   }
 
-  Object.keys(schema.lifeCycles).forEach(name => {
+  Object.keys(schema.lifeCycles).forEach((name) => {
     let { params, content } = parseFunction(schema.lifeCycles[name]);
     content = replaceState(content);
     switch (name) {
@@ -345,11 +364,11 @@ const parseDataSource = (data, imports) => {
         imports.push({
           import: singleImport,
           package: 'whatwg-fetch',
-          version: '^3.0.0'
+          version: '^3.0.0',
         });
       }
       payload = {
-        method: method
+        method: method,
       };
 
       break;
@@ -359,13 +378,13 @@ const parseDataSource = (data, imports) => {
         imports.push({
           import: singleImport,
           package: 'fetch-jsonp',
-          version: '^1.1.3'
+          version: '^1.1.3',
         });
       }
       break;
   }
 
-  Object.keys(data.options).forEach(key => {
+  Object.keys(data.options).forEach((key) => {
     if (['uri', 'method', 'params'].indexOf(key) === -1) {
       payload[key] = toString(data.options[key]);
     }
@@ -399,23 +418,26 @@ const parseDataSource = (data, imports) => {
 
   return {
     value: `function ${name}() ${result}`,
-    imports
+    imports,
   };
 };
 
 // get children text
-const getText = schema => {
+const getText = (schema) => {
   let text = '';
 
-  const getChildrenText = schema => {
+  const getChildrenText = (schema) => {
     const type = schema.componentName.toLowerCase();
     if (type === 'text') {
-      text += parseProps(schema.props.text || schema.text, true).replace(/\{/g, '${');
+      text += parseProps(schema.props.text || schema.text, true).replace(
+        /\{/g,
+        '${'
+      );
     }
 
     schema.children &&
       Array.isArray(schema.children) &&
-      schema.children.map(item => {
+      schema.children.map((item) => {
         getChildrenText(item);
       });
   };
@@ -443,5 +465,5 @@ module.exports = {
   parseLifeCycles,
   replaceState,
   generateCSS,
-  getText
+  getText,
 };

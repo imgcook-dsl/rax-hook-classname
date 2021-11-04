@@ -1,3 +1,4 @@
+const { add } = require('lodash');
 const {
   toString,
   existImport,
@@ -14,7 +15,7 @@ const {
   parseDataSource,
   line2Hump,
   getText,
-  isExpression
+  isExpression,
 } = require('./utils');
 
 function exportMod(schema, option) {
@@ -51,10 +52,18 @@ function exportMod(schema, option) {
   // init
   const init = [];
 
-  const collectImports = componentName => {
+  // animation
+  // let animation = {};
+
+  const collectImports = (componentName) => {
     let componentMap = componentsMap[componentName] || {};
-    let packageName = componentMap.package || componentMap.packageName || componentName;
-    if (packageName && ['view', 'image', 'text', 'picture'].indexOf(packageName.toLowerCase()) >= 0) {
+    let packageName =
+      componentMap.package || componentMap.packageName || componentName;
+    if (
+      packageName &&
+      ['view', 'image', 'text', 'picture'].indexOf(packageName.toLowerCase()) >=
+        0
+    ) {
       packageName = `rax-${packageName.toLowerCase()}`;
     }
     const singleImport = `import ${componentName} from '${packageName}'`;
@@ -62,25 +71,25 @@ function exportMod(schema, option) {
       imports.push({
         import: singleImport,
         package: packageName,
-        version: componentMap.dependenceVersion || '*'
+        version: componentMap.dependenceVersion || '*',
       });
     }
   };
 
   // generate render xml
-  const generateRender = schema => {
+  const generateRender = (schema) => {
     const componentName = schema.componentName;
     const type = schema.componentName.toLowerCase();
     const className = schema.props && schema.props.className;
     const classString = className ? ` className="${className}"` : '';
-    
-    let styles = {}
-    let codeStyles = {}
-    Object.keys(schema.props.style || {}).forEach(key => {
+
+    let styles = {};
+    let codeStyles = {};
+    Object.keys(schema.props.style || {}).forEach((key) => {
       if (isExpression(schema.props.style[key])) {
-        codeStyles[key] = schema.props.style[key]
+        codeStyles[key] = schema.props.style[key];
       } else {
-        styles[key] = schema.props.style[key]
+        styles[key] = schema.props.style[key];
       }
     });
 
@@ -94,12 +103,16 @@ function exportMod(schema, option) {
     let xml;
     let props = '';
 
-    Object.keys(schema.props).forEach(key => {
-      if (['className', 'style', 'text', 'src', 'key', 'codeStyle'].indexOf(key) === -1) {
+    Object.keys(schema.props).forEach((key) => {
+      if (
+        ['className', 'style', 'text', 'src', 'key', 'codeStyle'].indexOf(
+          key
+        ) === -1
+      ) {
         props += ` ${key}={${parseProps(schema.props[key])}}`;
       }
       if (key === 'codeStyle') {
-        if(JSON.stringify(schema.props[key]) !== '{}') {
+        if (JSON.stringify(schema.props[key]) !== '{}') {
           props += ` style={${parseProps(schema.props[key])}}`;
         }
       }
@@ -111,7 +124,9 @@ function exportMod(schema, option) {
 
       // 无障碍能力
       if (['onClick'].indexOf(key) === 0) {
-        props += ` accessible={true} role="link" aria-label={\`${getText(schema)}\`}`;
+        props += ` accessible={true} role="link" aria-label={\`${getText(
+          schema
+        )}\`}`;
       }
     });
 
@@ -179,29 +194,33 @@ function exportMod(schema, option) {
         schema.loopArgs,
         xml,
         statesData,
-        schema,
+        schema
       );
       xml = parseLoopData.value;
       useState = useState.concat(parseLoopData.hookState);
     }
-    
+
     xml = replaceState(xml);
 
     if (schema.condition) {
       xml = parseCondition(schema.condition, xml);
     }
-    if (schema.loop || (schema.condition && typeof schema.condition === 'string')) {
+    if (
+      schema.loop ||
+      (schema.condition && typeof schema.condition === 'string')
+    ) {
       xml = `{${xml}}`;
     }
     return xml;
   };
 
   // parse schema
-  const transform = schema => {
+  const transform = (schema) => {
     let result = '';
+    let animationRes = ``;
     const blockName = schema.fileName || schema.id;
     if (Array.isArray(schema)) {
-      schema.forEach(layer => {
+      schema.forEach((layer) => {
         result += transform(layer);
       });
     } else {
@@ -217,14 +236,14 @@ function exportMod(schema, option) {
         }
 
         if (schema.methods) {
-          Object.keys(schema.methods).forEach(name => {
+          Object.keys(schema.methods).forEach((name) => {
             const { params, content } = parseFunction(schema.methods[name]);
             methods.push(`function ${name}(${params}) {${content}}`);
           });
         }
 
         if (schema.dataSource && Array.isArray(schema.dataSource.list)) {
-          schema.dataSource.list.forEach(item => {
+          schema.dataSource.list.forEach((item) => {
             if (typeof item.isInit === 'boolean' && item.isInit) {
               init.push(`${item.id}();`);
             } else if (typeof item.isInit === 'string') {
@@ -253,8 +272,10 @@ function exportMod(schema, option) {
         }
       } else if (['block'].indexOf(type) !== -1) {
         let props = '';
-        Object.keys(schema.props).forEach(key => {
-          if (['className', 'style', 'text', 'src', 'key'].indexOf(key) === -1) {
+        Object.keys(schema.props).forEach((key) => {
+          if (
+            ['className', 'style', 'text', 'src', 'key'].indexOf(key) === -1
+          ) {
             props += ` ${key}={${parseProps(schema.props[key])}}`;
           }
         });
@@ -268,28 +289,26 @@ function exportMod(schema, option) {
         result += generateRender(schema);
       }
     }
-
     return result;
   };
 
   // option.utils
   if (option.utils) {
-    Object.keys(option.utils).forEach(name => {
+    Object.keys(option.utils).forEach((name) => {
       utils.push(`const ${name} = ${option.utils[name]}`);
     });
   }
 
   // start parse schema
   transform(schema);
-
   // output
   const prettierJsOpt = {
     parser: 'babel',
     printWidth: 120,
-    singleQuote: true
+    singleQuote: true,
   };
   const prettierCssOpt = {
-    parser: 'css'
+    parser: 'css',
   };
   const hooksView = generateRender(schema);
   const hasDispatch = hooksView.match('dispatch');
@@ -313,7 +332,11 @@ function exportMod(schema, option) {
       }
       ${lifeCycles.join('\n')}
       ${methods.join('\n')}
-      ${hooksView.match(/^\{true\ \&\& /) ? `return (<View>${hooksView}</View>)`: `return (${hooksView})`}
+      ${
+        hooksView.match(/^\{true\ \&\& /)
+          ? `return (<View>${hooksView}</View>)`
+          : `return (${hooksView})`
+      }
     });
   `,
     prettierJsOpt
@@ -321,23 +344,70 @@ function exportMod(schema, option) {
 
   const prefix = schema.props && schema.props.className;
 
+  let getAllLayers = function(layers, schema) {
+    if (schema.hasOwnProperty('children')) {
+      for (let i of schema.children) {
+        layers.push(i);
+        getAllLayers(layers, i);
+      }
+    }
+  };
+  // get keyframes from all children
+  const addAnimation = function(schema) {
+    let animationRes = ``;
+    if (schema.animation) {
+      animationRes += transAnimation(schema.animation);
+    }
+    let layers = [];
+    getAllLayers(layers, schema);
+    for (let i of layers) {
+      if (i.animation) {
+        animationRes += transAnimation(i.animation);
+      }
+    }
+    return animationRes;
+  };
+
+  const transAnimation = function(animation) {
+    let keyFrames = ``;
+    for (let i of animation.keyframes) {
+      keyFrames += `
+  ${((i.offset * 10000) / 100.0).toFixed(0) + '%'} {
+    ${i.opacity ? 'opacity: '.concat(i.opacity) + ';' : ''}
+    ${i.transform ? 'transform: '.concat(i.transform) + ';' : ''}
+  }
+  `;
+    }
+    let keyframes = `
+@keyframes ${animation.name} {
+  ${keyFrames}
+}
+`;
+    return keyframes;
+  };
+
+  animationKeyframes = addAnimation(schema);
   return [
     {
       panelName: `${fileName}.jsx`,
       panelValue: indexValue,
       panelType: 'js',
-      panelImports: imports
+      panelImports: imports,
     },
     {
       panelName: `${fileName}.css`,
-      panelValue: prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt),
-      panelType: 'css'
+      panelValue:
+        prettier.format(`${generateCSS(style, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
+      panelType: 'css',
     },
     {
       panelName: `${fileName}.rpx.css`,
-      panelValue: prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt),
-      panelType: 'css'
-    }
+      panelValue:
+        prettier.format(`${generateCSS(styleRpx, prefix)}`, prettierCssOpt) +
+        animationKeyframes,
+      panelType: 'css',
+    },
   ];
 }
 
